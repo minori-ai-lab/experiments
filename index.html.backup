@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>みのりのAI実験室</title>
+
+  <meta
+    name="description"
+    content="AIを使って、いろんなものを作ってみる。みのりのAI実験記録。"
+  >
+
+  <style>
+    :root {
+      --bg: #f8f7f4;
+      --white: #ffffff;
+      --text: #333333;
+      --muted: #777777;
+      --light-muted: #999999;
+      --border: #e8e5df;
+      --green: #8b9d8a;
+      --blue: #a9cfdf;
+      --blue-bg: #edf6fa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Kaku Gothic ProN",
+        "Hiragino Sans",
+        "Yu Gothic",
+        "YuGothic",
+        sans-serif;
+      line-height: 1.8;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(248, 247, 244, 0.94);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .logo {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .nav {
+      display: flex;
+      gap: 20px;
+      font-size: 14px;
+    }
+
+    .nav a {
+      color: #666;
+    }
+
+    .nav a:hover {
+      color: #222;
+    }
+
+    /* HERO */
+
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 90px 24px 90px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      align-items: center;
+      gap: 50px;
+    }
+
+    .hero-copy {
+      min-width: 0;
+    }
+
+    .hero-label {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 6px 12px;
+      border: 1px solid #ddd8cf;
+      border-radius: 999px;
+      color: #777;
+      font-size: 13px;
+      background: #fffdf9;
+    }
+
+    .hero h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(40px, 7vw, 76px);
+      line-height: 1.15;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+    }
+
+    .hero h1 span {
+      color: var(--green);
+    }
+
+    .hero-text {
+      max-width: 650px;
+      margin: 28px 0 0;
+      color: #666;
+      font-size: 18px;
+    }
+
+    .hero-note {
+      margin-top: 28px;
+      color: var(--light-muted);
+      font-size: 13px;
+    }
+
+    .hero-character {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-character img {
+      display: block;
+      width: min(100%, 420px);
+      height: auto;
+      border-radius: 28px;
+    }
+
+    /* SECTIONS */
+
+    section {
+      padding: 90px 24px;
+    }
+
+    .section-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .section-heading {
+      margin-bottom: 42px;
+    }
+
+    .section-heading small {
+      display: block;
+      margin-bottom: 8px;
+      color: #9a9a9a;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.3;
+    }
+
+    /* INTRO */
+
+    .intro {
+      background: #eeeee8;
+    }
+
+    .intro-content {
+      max-width: 720px;
+    }
+
+    .intro-content p {
+      margin: 0 0 20px;
+      color: #555;
+    }
+
+    /* EXPERIMENTS */
+
+    .experiment-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .experiment-card {
+      display: block;
+      padding: 28px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .experiment-card:hover {
+      transform: translateY(-3px);
+      border-color: #cfcac1;
+    }
+
+    .experiment-number {
+      color: #9a9a9a;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+    }
+
+    .experiment-card h3 {
+      margin: 10px 0 10px;
+      font-size: 21px;
+      line-height: 1.4;
+    }
+
+    .experiment-card p {
+      margin: 0;
+      color: #777;
+      font-size: 14px;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #f2f1ec;
+      color: #777;
+      font-size: 11px;
+    }
+
+    /* ABOUT */
+
+    .about {
+      background: var(--white);
+    }
+
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: start;
+    }
+
+    .about-content p {
+      margin-top: 0;
+      color: #666;
+    }
+
+    .about-box {
+      padding: 28px;
+      background: #f7f6f2;
+      border-radius: 18px;
+    }
+
+    .about-box h3 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .about-box ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #666;
+    }
+
+    /* SOCIAL */
+
+    .social {
+      background: var(--blue-bg);
+    }
+
+    .social-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 28px 32px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(169, 207, 223, 0.65);
+      border-radius: 18px;
+    }
+
+    .social-copy h3 {
+      margin: 0 0 6px;
+      font-size: 20px;
+    }
+
+    .social-copy p {
+      margin: 0;
+      color: #777;
+      font-size: 14px;
+    }
+
+    .x-link {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #222;
+      color: white;
+      font-size: 21px;
+      font-weight: 700;
+      transition: transform 0.2s ease;
+    }
+
+    .x-link:hover {
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      color: #999;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 760px) {
+      .header-inner {
+        padding: 14px 18px;
+      }
+
+      .nav {
+        gap: 12px;
+      }
+
+      .hero {
+        padding: 70px 20px 70px;
+        grid-template-columns: 1fr;
+        gap: 35px;
+      }
+
+      .hero-character {
+        order: -1;
+      }
+
+      .hero-character img {
+        width: min(82vw, 360px);
+      }
+
+      .hero-text {
+        font-size: 16px;
+      }
+
+      section {
+        padding: 70px 20px;
+      }
+
+      .experiment-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .social-card {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+
+      <a class="logo" href="#">
+        みのりのAI実験室
+      </a>
+
+      <nav class="nav">
+        <a href="#experiments">Experiments</a>
+        <a href="#about">About</a>
+      </nav>
+
+    </div>
+  </header>
+
+
+  <main>
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+      <div class="hero-copy">
+
+        <div class="hero-label">
+          AI EXPERIMENTS
+        </div>
+
+        <h1>
+          AIを使って、<br>
+          <span>いろいろ作ってみる。</span>
+        </h1>
+
+        <p class="hero-text">
+          AIを使って、サイトを作ったり、分析したり、
+          キャラクターを作ったり。
+          「これ、AIで作れるんちゃう？」を実際に試していく実験記録です。
+        </p>
+
+        <p class="hero-note">
+          このサイト自体も、AIと一緒に作っています。
+        </p>
+
+      </div>
+
+
+      <div class="hero-character">
+        <img
+          src="assets/pote.jpg"
+          alt="みのりのAI実験室のキャラクター、ぽて"
+        >
+      </div>
+
+    </section>
+
+
+    <!-- INTRO -->
+
+    <section class="intro">
+
+      <div class="section-inner">
+
+        <div class="section-heading">
+          <small>About this site</small>
+
+          <h2>
+            ここは、AIで遊びながら<br>
+            いろいろ試す場所。
+          </h2>
+        </div>
+
+        <div class="intro-content">
+
+          <p>
+            AIって、調べるだけじゃなくて、
+            実際に何かを作るところまで一緒にできる。
+          </p>
+
+          <p>
+            じゃあ、どこまでできるんやろ？
+          </p>
+
+          <p>
+            そんなところから始めて、
+            作ったもの、失敗したこと、うまくいったことを
+            そのまま記録していきます。
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- EXPERIMENTS -->
+
+    <section id="experiments">
+
+      <div class="section-inner">
+
+        <div class="section-heading">
+          <small>Experiments</small>
+
+          <h2>
+            やってみたこと。
+          </h2>
+        </div>
+
+
+        <div class="experiment-grid">
+
+          <a class="experiment-card" href="#">
+            <div class="experiment-number">
+              EXPERIMENT 01
+            </div>
+
+            <h3>
+              AIでサイトを作ってみた
+            </h3>
+
+            <p>
+              ChatGPT、Geminiなどを使って、
+              実際にWebサイトを作ってみる。
+            </p>
+
+            <span class="status">
+              記録中
+            </span>
+          </a>
+
+
+          <a class="experiment-card" href="#">
+            <div class="experiment-number">
+              EXPERIMENT 02
+            </div>
+
+            <h3>
+              GA・GTM・GSCを入れてみた
+            </h3>
+
+            <p>
+              作ったサイトに計測環境を入れて、
+              実際にデータを取ってみる。
+            </p>
+
+            <span class="status">
+              これから
+            </span>
+          </a>
+
+
+          <a class="experiment-card" href="#">
+            <div class="experiment-number">
+              EXPERIMENT 03
+            </div>
+
+            <h3>
+              サイトを分析してみた
+            </h3>
+
+            <p>
+              集まったデータを見ながら、
+              「何が起きてるのか」を考えてみる。
+            </p>
+
+            <span class="status">
+              これから
+            </span>
+          </a>
+
+
+          <a class="experiment-card" href="#">
+            <div class="experiment-number">
+              EXPERIMENT 04
+            </div>
+
+            <h3>
+              サイトを改善してみた
+            </h3>
+
+            <p>
+              分析した結果をもとに、
+              実際にページを変えて効果を見てみる。
+            </p>
+
+            <span class="status">
+              これから
+            </span>
+          </a>
+
+
+          <a class="experiment-card" href="#">
+            <div class="experiment-number">
+              EXPERIMENT 05
+            </div>
+
+            <h3>
+              癒やしAI相棒を作りたい
+            </h3>
+
+            <p>
+              そばにいて、話を聞いてくれて、
+              ちょっと心を軽くしてくれる。
+              そんなオリジナルAI相棒を作ってみる。
+            </p>
+
+            <span class="status">
+              制作中
+            </span>
+          </a>
+
+
+          <a class="experiment-card" href="#">
+            <div class="experiment-number">
+              EXPERIMENT 06
+            </div>
+
+            <h3>
+              まだ考え中。
+            </h3>
+
+            <p>
+              次に何を作るかも、
+              実験しながら決めていきます。
+            </p>
+
+            <span class="status">
+              Coming soon
+            </span>
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ABOUT -->
+
+    <section id="about" class="about">
+
+      <div class="section-inner">
+
+        <div class="section-heading">
+          <small>About</small>
+
+          <h2>
+            このサイトについて。
+          </h2>
+        </div>
+
+
+        <div class="about-content">
+
+          <div>
+
+            <p>
+              このサイトは、AIを使っていろんなものを
+              作ってみる過程を記録するための個人サイトです。
+            </p>
+
+            <p>
+              完成品だけじゃなく、
+              「うまくいかなかった」「思ってたんと違う」
+              みたいなところも含めて残していきます。
+            </p>
+
+          </div>
+
+
+          <div class="about-box">
+
+            <h3>
+              このサイトでやること
+            </h3>
+
+            <ul>
+              <li>AIを使って何か作る</li>
+              <li>実際に使ってみる</li>
+              <li>データを見てみる</li>
+              <li>改善してみる</li>
+              <li>また何か作ってみる</li>
+            </ul>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- X -->
+
+    <section class="social">
+
+      <div class="section-inner">
+
+        <div class="section-heading">
+
+          <small>Social</small>
+
+          <h2>
+            Xでも制作記録。
+          </h2>
+
+        </div>
+
+
+        <div class="social-card">
+
+          <div class="social-copy">
+
+            <h3>
+              みのりのAI実験室
+            </h3>
+
+            <p>
+              AIで作ってみたことを、Xでも記録していきます。
+            </p>
+
+          </div>
+
+
+          <a
+            class="x-link"
+            href="https://x.com/minori_ai_lab"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="みのりのAI実験室 Xアカウント"
+          >
+            𝕏
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+    © 2026 みのりのAI実験室
+  </footer>
+
+</body>
+</html>
