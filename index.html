@@ -1,1673 +1,1658 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>みのりのAI実験室｜AIを使って、いろいろ作ってみる。</title>
-
-  <meta
-    name="description"
-    content="AIを使って、サイトを作ったり、分析したり、キャラクターを作ったり。実際に試して記録していく、みのりのAI実験室。"
-  >
-
-  <style>
-    :root {
-      --bg: #f7fbfc;
-      --paper: #ffffff;
-      --paper-soft: #fbfefe;
-
-      --text: #394347;
-      --muted: #748084;
-      --muted-light: #8c999c;
-
-      --line: #dfecef;
-
-      --blue: #dceff4;
-      --blue-soft: #edf7f9;
-      --blue-deep: #6e9aa7;
-
-      --pink: #f5dfe4;
-      --pink-soft: #fbf0f2;
-
-      --cream: #f8f3e9;
-
-      --gold: #d8b96c;
-
-      --shadow:
-        0 18px 50px rgba(76, 112, 122, 0.08);
-
-      --shadow-soft:
-        0 10px 30px rgba(76, 112, 122, 0.06);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      background:
-        radial-gradient(
-          circle at 15% 10%,
-          rgba(220, 239, 244, 0.55),
-          transparent 28%
-        ),
-        radial-gradient(
-          circle at 88% 42%,
-          rgba(245, 223, 228, 0.35),
-          transparent 25%
-        ),
-        var(--bg);
-
-      color: var(--text);
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Hiragino Kaku Gothic ProN",
-        "Hiragino Sans",
-        "Yu Gothic",
-        "Meiryo",
-        sans-serif;
-
-      line-height: 1.8;
-    }
+<title>Minori's AI Lab</title>
 
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+<meta
+  name="description"
+  content="AIを使って、いろいろ作ってみる。サイト、AI相棒、分析、LINEスタンプなど、実際に作って試した記録。"
+/>
 
-    img {
-      max-width: 100%;
-      display: block;
-    }
+<style>
 
-    .container {
-      width: min(1100px, calc(100% - 40px));
-      margin: 0 auto;
-    }
+/* =========================================================
+   VARIABLES
+========================================================= */
 
-    /* =========================
-       Header
-    ========================= */
+:root {
+  --bg: #ffffff;
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 30;
+  --surface: #ffffff;
+  --surface-soft: #f7f9f8;
 
-      background: rgba(247, 251, 252, 0.9);
+  --text: #273633;
+  --muted: #71807c;
 
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+  /* ベイマックスっぽい、白＋グレー緑 */
+  --accent: #7f938d;
+  --accent-dark: #657b75;
+  --accent-soft: #edf3f1;
+  --accent-border: rgba(101, 123, 117, .18);
 
-      border-bottom: 1px solid rgba(223, 236, 239, 0.85);
-    }
+  --pink-soft: #f7e9ed;
 
-    .header-inner {
-      min-height: 72px;
+  --radius-lg: 30px;
+  --radius-md: 22px;
 
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+  --max-width: 1120px;
+}
 
-      gap: 24px;
-    }
 
-    .logo {
-      font-size: 1.02rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
+/* =========================================================
+   RESET
+========================================================= */
 
-      color: #415158;
-    }
+* {
+  box-sizing: border-box;
+}
 
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 24px;
+html {
+  scroll-behavior: smooth;
+}
 
-      font-size: 0.88rem;
-      color: var(--muted);
-    }
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
 
-    nav a {
-      transition:
-        color 0.2s ease,
-        transform 0.2s ease;
-    }
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    "Yu Gothic",
+    "YuGothic",
+    sans-serif;
 
-    nav a:hover {
-      color: var(--blue-deep);
-      transform: translateY(-1px);
-    }
+  line-height: 1.8;
+  overflow-x: hidden;
+}
 
-    /* =========================
-       Hero
-    ========================= */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
 
-    .hero {
-      min-height: 650px;
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
 
-      align-items: center;
 
-      gap: 58px;
+/* =========================================================
+   HEADER
+========================================================= */
 
-      padding: 85px 0 80px;
-    }
+header {
+  position: relative;
+  z-index: 10;
 
-    .hero-copy {
-      position: relative;
-      z-index: 2;
-    }
+  width: min(100% - 40px, var(--max-width));
+  margin: 0 auto;
 
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+  padding: 24px 0;
+}
 
-      margin-bottom: 18px;
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-      padding: 6px 14px;
+  gap: 24px;
+}
 
-      border: 1px solid #d8e9ed;
-      border-radius: 999px;
+.logo {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
 
-      background: rgba(255, 255, 255, 0.78);
+.logo span {
+  color: var(--accent);
+}
 
-      color: var(--blue-deep);
+.nav-links {
+  display: flex;
+  align-items: center;
 
-      font-size: 0.76rem;
-      font-weight: 700;
+  gap: 24px;
 
-      letter-spacing: 0.1em;
-    }
+  font-size: 13px;
+  color: var(--muted);
+}
 
-    .eyebrow::before {
-      content: "";
-      width: 7px;
-      height: 7px;
+.nav-links a {
+  transition: color .2s ease;
+}
 
-      border-radius: 50%;
+.nav-links a:hover {
+  color: var(--text);
+}
 
-      background: #a9cfd8;
-    }
 
-    h1 {
-      margin: 0 0 25px;
+/* =========================================================
+   COMMON
+========================================================= */
 
-      font-size: clamp(2.4rem, 5vw, 4.5rem);
+main {
+  width: min(100% - 40px, var(--max-width));
+  margin: 0 auto;
+}
 
-      line-height: 1.17;
+section {
+  position: relative;
+  padding: 110px 0;
+}
 
-      letter-spacing: -0.045em;
+.section-label {
+  margin-bottom: 12px;
 
-      font-weight: 850;
+  color: var(--accent);
 
-      color: #344248;
-    }
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
 
-    .hero-lead {
-      margin: 0;
+.section-title {
+  margin: 0;
 
-      max-width: 650px;
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.35;
+  letter-spacing: -.04em;
+}
 
-      color: #69777b;
+.section-lead {
+  max-width: 680px;
 
-      font-size: 1.04rem;
-    }
+  margin: 20px 0 0;
 
-    .hero-note {
-      display: inline-block;
+  color: var(--muted);
 
-      margin-top: 24px;
+  font-size: 15px;
+}
 
-      padding: 8px 13px;
 
-      border-radius: 12px;
+/* =========================================================
+   HERO
+========================================================= */
 
-      background: rgba(220, 239, 244, 0.62);
+.hero {
+  min-height: 700px;
 
-      color: #60808a;
+  display: grid;
 
-      font-size: 0.9rem;
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(320px, .95fr);
 
-      font-weight: 700;
-    }
+  align-items: center;
 
-    .hero-visual {
-      min-height: 485px;
+  gap: 40px;
 
-      position: relative;
+  padding-top: 70px;
+}
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+.hero-copy {
+  position: relative;
+  z-index: 2;
+}
 
-      border-radius: 48px;
+.hero-kicker {
+  display: inline-flex;
+  align-items: center;
 
-      overflow: hidden;
+  gap: 9px;
 
-      background:
-        radial-gradient(
-          circle at 50% 40%,
-          #ffffff 0%,
-          #f8fbfb 42%,
-          #eaf5f7 100%
-        );
+  margin-bottom: 24px;
 
-      border: 1px solid rgba(214, 233, 237, 0.85);
+  color: var(--muted);
 
-      box-shadow: var(--shadow);
-    }
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
 
-    .hero-visual::before {
-      content: "";
+.hero-kicker::before {
+  content: "";
 
-      position: absolute;
+  width: 28px;
+  height: 1px;
 
-      width: 350px;
-      height: 350px;
+  background: var(--accent);
+}
 
-      border-radius: 50%;
+.hero h1 {
+  margin: 0;
 
-      background:
-        radial-gradient(
-          circle,
-          rgba(207, 235, 241, 0.85),
-          rgba(207, 235, 241, 0.2) 60%,
-          transparent 72%
-        );
-    }
+  max-width: 720px;
 
-    .hero-visual::after {
-      content: "";
+  font-size: clamp(46px, 7vw, 86px);
 
-      position: absolute;
+  line-height: 1.16;
 
-      width: 180px;
-      height: 180px;
+  letter-spacing: -.065em;
 
-      right: -45px;
-      bottom: -55px;
+  overflow: visible;
 
-      border-radius: 50%;
+  word-break: keep-all;
 
-      background: rgba(245, 223, 228, 0.45);
-    }
+  overflow-wrap: normal;
+}
 
-    .hero-visual img {
-      position: relative;
-      z-index: 2;
+.hero h1 .line {
+  display: block;
 
-      width: min(90%, 455px);
+  white-space: nowrap;
 
-      max-height: 455px;
+  padding-right: .08em;
+}
 
-      object-fit: contain;
+/*
+  ここが「AIを使って、いろいろ作ってみる。」の色
+  前のグレー〜緑系に戻す
+*/
 
-      /*
-        JPEGの背景が白〜淡色なら、
-        背景との境界を少し自然に見せる。
-      */
-      mix-blend-mode: multiply;
+.hero h1 .accent {
+  color: var(--accent-dark);
+}
 
-      filter:
-        drop-shadow(0 20px 24px rgba(66, 91, 98, 0.11));
+.hero-description {
+  max-width: 560px;
 
-      transform: translateY(5px);
-    }
+  margin: 30px 0 0;
 
-    /* =========================
-       Common Sections
-    ========================= */
+  color: var(--muted);
 
-    section {
-      padding: 100px 0;
-    }
+  font-size: 16px;
+}
 
-    .section-heading {
-      margin-bottom: 42px;
-    }
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
 
-    .section-heading .small {
-      color: var(--blue-deep);
+  gap: 12px;
 
-      font-size: 0.76rem;
+  margin-top: 30px;
+}
 
-      font-weight: 800;
+.button {
+  display: inline-flex;
 
-      letter-spacing: 0.13em;
-    }
+  align-items: center;
+  justify-content: center;
 
-    .section-heading h2 {
-      margin: 8px 0 12px;
+  min-height: 46px;
 
-      font-size: clamp(1.9rem, 4vw, 2.75rem);
+  padding: 0 20px;
 
-      line-height: 1.3;
+  border-radius: 999px;
 
-      letter-spacing: -0.025em;
+  font-size: 13px;
+  font-weight: 700;
 
-      color: #3d4a4f;
-    }
+  transition:
+    transform .2s ease,
+    background .2s ease;
+}
 
-    .section-heading p {
-      margin: 0;
+.button:hover {
+  transform: translateY(-2px);
+}
 
-      max-width: 700px;
+.button-primary {
+  background: var(--accent);
 
-      color: var(--muted);
-    }
+  color: white;
+}
 
-    /* =========================
-       Intro
-    ========================= */
+.button-secondary {
+  background: white;
 
-    .intro {
-      display: grid;
+  border: 1px solid var(--accent-border);
 
-      grid-template-columns: 0.8fr 1.2fr;
+  color: var(--text);
+}
 
-      gap: 72px;
 
-      align-items: center;
-    }
+/* =========================================================
+   HERO IMAGE
+   画像は普通に表示する
+   blend / mask は使わない
+========================================================= */
 
-    .intro-image {
-      min-height: 390px;
+.hero-art {
+  position: relative;
 
-      position: relative;
+  min-height: 520px;
 
-      display: flex;
-      align-items: end;
-      justify-content: center;
+  display: flex;
 
-      overflow: hidden;
+  align-items: center;
+  justify-content: center;
+}
 
-      border-radius: 38px;
+.hero-art::before {
+  content: "";
 
-      background:
-        radial-gradient(
-          circle at 50% 35%,
-          #ffffff,
-          #edf7f9 72%
-        );
+  position: absolute;
 
-      border: 1px solid #dcecef;
+  width: 430px;
+  height: 430px;
 
-      box-shadow: var(--shadow-soft);
-    }
+  border-radius: 50%;
 
-    .intro-image::after {
-      content: "";
+  background:
+    radial-gradient(
+      circle,
+      rgba(127, 147, 141, .18) 0%,
+      rgba(127, 147, 141, .10) 40%,
+      rgba(127, 147, 141, .04) 62%,
+      rgba(127, 147, 141, 0) 78%
+    );
+}
 
-      position: absolute;
+.hero-art img {
+  position: relative;
 
-      width: 190px;
-      height: 70px;
+  z-index: 2;
 
-      left: 50%;
-      bottom: 15px;
+  width: min(100%, 520px);
+  mix-blend-mode: multiply;
 
-      transform: translateX(-50%);
+  filter:
+    drop-shadow(
+      0 18px 24px
+      rgba(70, 90, 85, .08)
+    );
+}
 
-      border-radius: 50%;
 
-      background: rgba(126, 163, 173, 0.09);
+/* =========================================================
+   INTRO
+========================================================= */
 
-      filter: blur(8px);
-    }
+.intro {
+  display: grid;
 
-    .intro-image img {
-      position: relative;
-      z-index: 2;
+  grid-template-columns:
+    330px
+    minmax(0, 1fr);
 
-      width: 88%;
+  align-items: center;
 
-      max-height: 390px;
+  gap: 80px;
+}
 
-      object-fit: contain;
+.intro-art {
+  position: relative;
 
-      mix-blend-mode: multiply;
+  display: flex;
 
-      filter:
-        drop-shadow(0 15px 18px rgba(65, 91, 98, 0.09));
-    }
+  justify-content: center;
+}
 
-    .intro-text p {
-      color: #6d797d;
-    }
+.intro-art::before {
+  content: "";
 
-    .intro-text strong {
-      color: #46545a;
-    }
+  position: absolute;
 
-    /* =========================
-       Experiments
-    ========================= */
+  width: 280px;
+  height: 280px;
 
-    .experiments {
-      position: relative;
+  border-radius: 50%;
 
-      background:
-        linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.72),
-          rgba(244, 250, 251, 0.9)
-        );
+  background: var(--accent-soft);
 
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-    }
+  opacity: .85;
+}
 
-    .experiment-grid {
-      display: grid;
+.intro-art img {
+  position: relative;
 
-      grid-template-columns: repeat(2, 1fr);
+  z-index: 1;
 
-      gap: 20px;
-    }
+  width: 310px;
 
-    .experiment-card {
-      position: relative;
+  filter:
+    drop-shadow(
+      0 18px 22px
+      rgba(70, 90, 85, .07)
+    );
+}
 
-      min-height: 270px;
+.intro-copy h2 {
+  margin: 0;
 
-      padding: 31px;
+  font-size: clamp(28px, 4vw, 42px);
 
-      border: 1px solid #dcebed;
+  line-height: 1.45;
 
-      border-radius: 28px;
+  letter-spacing: -.04em;
+}
 
-      background:
-        linear-gradient(
-          145deg,
-          rgba(255, 255, 255, 0.98),
-          rgba(250, 253, 253, 0.98)
-        );
+.intro-copy p {
+  margin: 24px 0 0;
 
-      box-shadow: var(--shadow-soft);
+  color: var(--muted);
+}
 
-      overflow: hidden;
 
-      transition:
-        transform 0.22s ease,
-        box-shadow 0.22s ease,
-        border-color 0.22s ease;
-    }
+/* =========================================================
+   EXPERIMENTS
+========================================================= */
 
-    .experiment-card:hover {
-      transform: translateY(-4px);
+.experiments {
+  padding-top: 70px;
+}
 
-      border-color: #cbdfe4;
+.experiment-list {
+  display: grid;
 
-      box-shadow:
-        0 22px 45px rgba(76, 112, 122, 0.11);
-    }
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
 
-    .experiment-card::before {
-      content: "";
+  gap: 20px;
 
-      position: absolute;
+  margin-top: 48px;
+}
 
-      width: 130px;
-      height: 130px;
+.experiment {
+  position: relative;
 
-      right: -55px;
-      top: -55px;
+  display: grid;
 
-      border-radius: 50%;
+  grid-template-columns:
+    minmax(0, 1fr)
+    150px;
 
-      background: rgba(220, 239, 244, 0.45);
-    }
+  min-height: 250px;
 
-    .experiment-number {
-      position: relative;
-      z-index: 2;
+  padding: 30px;
 
-      color: var(--blue-deep);
+  border: 1px solid var(--accent-border);
 
-      font-size: 0.76rem;
+  border-radius: var(--radius-md);
 
-      font-weight: 850;
+  background: var(--surface);
 
-      letter-spacing: 0.11em;
-    }
+  overflow: hidden;
 
-    .experiment-card h3 {
-      position: relative;
-      z-index: 2;
+  transition:
+    transform .25s ease,
+    background .25s ease;
+}
 
-      margin: 10px 0 12px;
+.experiment:hover {
+  transform: translateY(-4px);
 
-      max-width: 78%;
+  background: var(--surface-soft);
+}
 
-      font-size: 1.32rem;
+.experiment-copy {
+  position: relative;
 
-      line-height: 1.45;
-    }
+  z-index: 2;
 
-    .experiment-card p {
-      position: relative;
-      z-index: 2;
+  padding-right: 12px;
+}
 
-      margin: 0;
+.experiment-number {
+  color: var(--accent);
 
-      max-width: 76%;
+  font-size: 11px;
 
-      color: var(--muted);
+  font-weight: 800;
 
-      font-size: 0.91rem;
-    }
+  letter-spacing: .12em;
+}
 
-    .status {
-      position: relative;
-      z-index: 3;
+.experiment h3 {
+  margin: 12px 0 8px;
 
-      display: inline-block;
+  font-size: 20px;
 
-      margin-top: 22px;
+  letter-spacing: -.02em;
+}
 
-      padding: 5px 11px;
+.experiment p {
+  margin: 0;
 
-      border-radius: 999px;
+  color: var(--muted);
 
-      background: var(--blue-soft);
+  font-size: 14px;
+}
 
-      color: #6d8991;
+.experiment-tag {
+  display: inline-block;
 
-      font-size: 0.73rem;
+  margin-top: 18px;
 
-      font-weight: 700;
-    }
+  padding: 5px 10px;
 
-    .experiment-character {
-      position: absolute;
+  border-radius: 999px;
 
-      right: -2px;
-      bottom: -18px;
+  background: var(--accent-soft);
 
-      width: 145px;
+  color: var(--accent-dark);
 
-      opacity: 0.96;
+  font-size: 11px;
 
-      pointer-events: none;
+  font-weight: 700;
+}
 
-      z-index: 1;
-    }
 
-    .experiment-character img {
-      width: 100%;
+/* =========================================================
+   EXPERIMENT IMAGE
+   右下に置く
+========================================================= */
 
-      height: 165px;
+.experiment-image {
+  position: absolute;
 
-      object-fit: contain;
+  right: 0;
+  bottom: 0;
 
-      object-position: bottom center;
+  width: 160px;
+  height: 160px;
 
-      mix-blend-mode: multiply;
+  display: flex;
 
-      filter:
-        drop-shadow(0 10px 12px rgba(68, 91, 96, 0.07));
-    }
+  align-items: flex-end;
+  justify-content: flex-end;
 
-    /* =========================
-       Pote
-    ========================= */
+  pointer-events: none;
+}
 
-    .pote-section {
-      overflow: hidden;
-    }
+.experiment-image img {
+  width: 180px;
 
-    .pote-layout {
-      display: grid;
+  max-width: none;
 
-      grid-template-columns: 1fr 1fr;
+  filter:
+    drop-shadow(
+      0 10px 16px
+      rgba(70, 90, 85, .08)
+    );
+}
 
-      gap: 60px;
 
-      align-items: center;
-    }
+/* =========================================================
+   POTE PROJECT
+========================================================= */
 
-    .pote-copy p {
-      color: var(--muted);
-    }
+.pote-project {
+  overflow: hidden;
+}
 
-    .pote-points {
-      display: grid;
+.pote-project-inner {
+  position: relative;
 
-      gap: 12px;
+  padding: 70px;
 
-      margin-top: 28px;
-    }
+  border-radius: 40px;
 
-    .pote-point {
-      padding: 17px 19px;
+  background:
+    linear-gradient(
+      135deg,
+      #f7f9f8,
+      #ffffff
+    );
 
-      border-radius: 19px;
+  border: 1px solid var(--accent-border);
+}
 
-      background: rgba(255, 255, 255, 0.82);
+.pote-project-inner::before {
+  content: "";
 
-      border: 1px solid #deecef;
+  position: absolute;
 
-      box-shadow: 0 7px 20px rgba(76, 112, 122, 0.04);
-    }
+  width: 280px;
+  height: 280px;
 
-    .pote-point strong {
-      display: block;
+  right: -100px;
+  top: -110px;
 
-      margin-bottom: 3px;
+  border-radius: 50%;
 
-      color: #48565b;
-    }
+  background: var(--pink-soft);
 
-    .pote-visual {
-      min-height: 500px;
+  opacity: .6;
+}
 
-      position: relative;
+.pote-project-content {
+  position: relative;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  z-index: 2;
 
-      overflow: hidden;
+  max-width: 650px;
+}
 
-      border-radius: 42px;
+.pote-project h2 {
+  margin: 0;
 
-      background:
-        radial-gradient(
-          circle at 50% 35%,
-          #ffffff 0%,
-          #f9fbf8 45%,
-          #f4eee2 100%
-        );
+  font-size: clamp(30px, 5vw, 54px);
 
-      border: 1px solid #e7e1d5;
+  line-height: 1.3;
 
-      box-shadow: var(--shadow);
-    }
+  letter-spacing: -.05em;
+}
 
-    .pote-visual::before {
-      content: "";
+.pote-project p {
+  margin: 22px 0 0;
 
-      position: absolute;
+  color: var(--muted);
+}
 
-      width: 330px;
-      height: 330px;
+.pote-project-art {
+  position: absolute;
 
-      border-radius: 50%;
+  right: 30px;
+  bottom: -20px;
 
-      background:
-        radial-gradient(
-          circle,
-          rgba(245, 223, 228, 0.35),
-          transparent 68%
-        );
-    }
+  width: 290px;
 
-    .pote-visual img {
-      position: relative;
-      z-index: 2;
+  pointer-events: none;
+}
 
-      width: 92%;
+.pote-project-art img {
+  width: 100%;
+  mix-blend-mode: multiply;
 
-      max-height: 500px;
+  filter:
+    drop-shadow(
+      0 18px 22px
+      rgba(70, 90, 85, .08)
+    );
+}
 
-      object-fit: contain;
 
-      mix-blend-mode: multiply;
+/* =========================================================
+   FUTURE
+========================================================= */
 
-      filter:
-        drop-shadow(0 18px 22px rgba(66, 91, 98, 0.1));
-    }
+.future-list {
+  display: grid;
 
-    /* =========================
-       Image Strip
-    ========================= */
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
 
-    .image-strip {
-      margin-top: 55px;
+  gap: 16px;
 
-      display: grid;
+  margin-top: 42px;
+}
 
-      grid-template-columns: repeat(4, 1fr);
+.future-item {
+  padding: 26px;
 
-      gap: 15px;
-    }
+  border-top:
+    2px solid var(--accent);
+}
 
-    .image-tile {
-      min-height: 195px;
+.future-item h3 {
+  margin: 0;
 
-      position: relative;
+  font-size: 17px;
+}
 
-      display: flex;
-      align-items: end;
-      justify-content: center;
+.future-item p {
+  margin: 10px 0 0;
 
-      overflow: hidden;
+  color: var(--muted);
 
-      border-radius: 24px;
+  font-size: 13px;
+}
 
-      background:
-        linear-gradient(
-          145deg,
-          #edf7f9,
-          #f8f3e9
-        );
 
-      border: 1px solid #e0ecee;
-    }
+/* =========================================================
+   ABOUT
+========================================================= */
 
-    .image-tile img {
-      width: 100%;
+.about {
+  padding-bottom: 130px;
+}
 
-      height: 220px;
+.about-box {
+  padding: 42px;
 
-      object-fit: contain;
+  border-radius: var(--radius-lg);
 
-      object-position: bottom center;
+  background: var(--surface-soft);
 
-      mix-blend-mode: multiply;
+  border: 1px solid var(--accent-border);
+}
 
-      filter:
-        drop-shadow(0 10px 12px rgba(68, 91, 96, 0.06));
-    }
+.about-box p {
+  margin: 0;
 
-    /* =========================
-       About
-    ========================= */
+  color: var(--muted);
+}
 
-    .about {
-      background:
-        linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.82),
-          rgba(248, 252, 252, 0.9)
-        );
+.about-links {
+  display: flex;
 
-      border-top: 1px solid var(--line);
-    }
+  flex-wrap: wrap;
 
-    .about-grid {
-      display: grid;
+  gap: 10px;
 
-      grid-template-columns: 1fr 1fr;
+  margin-top: 24px;
+}
 
-      gap: 22px;
-    }
+.about-link {
+  padding: 8px 14px;
 
-    .about-box {
-      padding: 34px;
+  border-radius: 999px;
 
-      border-radius: 28px;
+  background: var(--accent-soft);
 
-      background: #ffffff;
+  color: var(--accent-dark);
 
-      border: 1px solid #deecef;
+  font-size: 12px;
 
-      box-shadow: var(--shadow-soft);
-    }
+  font-weight: 700;
+}
 
-    .about-box h3 {
-      margin-top: 0;
 
-      font-size: 1.22rem;
+/* =========================================================
+   FOOTER
+========================================================= */
 
-      color: #435158;
-    }
+footer {
+  padding: 34px 20px 46px;
 
-    .about-box p {
-      color: var(--muted);
-    }
+  color: var(--muted);
 
-    /* =========================
-       Social
-    ========================= */
+  text-align: center;
 
-    .social {
-      text-align: center;
+  font-size: 12px;
+}
 
-      padding: 90px 0;
-    }
 
-    .social .section-heading {
-      margin-bottom: 25px;
-    }
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
-    .social a {
-      display: inline-flex;
+@media (max-width: 900px) {
 
-      align-items: center;
-      justify-content: center;
+  .hero {
+    grid-template-columns: 1fr;
 
-      gap: 9px;
+    min-height: auto;
 
-      margin-top: 8px;
+    padding-top: 50px;
+  }
 
-      padding: 13px 22px;
+  .hero-art {
+    min-height: 420px;
 
-      border-radius: 999px;
+    order: -1;
+  }
 
-      background: #3e4b50;
+  .hero-art::before {
+    width: 330px;
+    height: 330px;
+  }
 
-      color: #ffffff;
+  .hero h1 {
+    font-size: clamp(42px, 11vw, 68px);
+  }
 
-      font-size: 0.9rem;
-      font-weight: 700;
+  .intro {
+    grid-template-columns: 1fr;
 
-      box-shadow:
-        0 10px 24px rgba(62, 75, 80, 0.12);
+    gap: 40px;
+  }
 
-      transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-    }
+  .intro-art {
+    max-width: 300px;
+  }
 
-    .social a:hover {
-      transform: translateY(-2px);
+  .experiment-list {
+    grid-template-columns: 1fr;
+  }
 
-      box-shadow:
-        0 14px 28px rgba(62, 75, 80, 0.17);
-    }
+  .future-list {
+    grid-template-columns: 1fr;
+  }
 
-    /* =========================
-       Footer
-    ========================= */
+  .pote-project-inner {
+    padding:
+      42px
+      30px
+      270px;
+  }
 
-    footer {
-      padding: 35px 0;
+  .pote-project-art {
+    width: 250px;
 
-      border-top: 1px solid var(--line);
+    right: 50%;
 
-      color: var(--muted-light);
+    transform:
+      translateX(50%);
 
-      font-size: 0.78rem;
+    bottom: -35px;
+  }
+}
 
-      background: rgba(255, 255, 255, 0.55);
-    }
 
-    .footer-inner {
-      display: flex;
+@media (max-width: 600px) {
 
-      justify-content: space-between;
+  header,
+  main {
+    width:
+      min(
+        100% - 28px,
+        var(--max-width)
+      );
+  }
 
-      gap: 20px;
-    }
+  .nav-links {
+    gap: 12px;
 
-    /* =========================
-       Responsive
-    ========================= */
+    font-size: 11px;
+  }
 
-    @media (max-width: 800px) {
-      .container {
-        width: min(100% - 28px, 1100px);
-      }
+  section {
+    padding: 80px 0;
+  }
 
-      .header-inner {
-        min-height: 64px;
-      }
+  .hero {
+    padding-top: 30px;
+  }
 
-      nav {
-        gap: 14px;
-        font-size: 0.82rem;
-      }
+  .hero h1 {
+    font-size:
+      clamp(
+        38px,
+        12vw,
+        56px
+      );
+  }
 
-      .hero {
-        grid-template-columns: 1fr;
+  .hero h1 .line {
+    white-space: normal;
+  }
 
-        min-height: auto;
+  .hero-art {
+    min-height: 330px;
+  }
 
-        padding: 55px 0 45px;
+  .hero-art::before {
+    width: 270px;
+    height: 270px;
+  }
 
-        gap: 35px;
-      }
+  .hero-art img {
+    width: 330px;
+  }
 
-      .hero-visual {
-        min-height: 390px;
+  .experiment {
+    grid-template-columns: 1fr;
 
-        border-radius: 34px;
-      }
+    min-height: 390px;
 
-      section {
-        padding: 75px 0;
-      }
+    padding: 24px;
+  }
 
-      .intro,
-      .pote-layout,
-      .about-grid {
-        grid-template-columns: 1fr;
+  .experiment-copy {
+    padding-right: 0;
+  }
 
-        gap: 35px;
-      }
+  .experiment-image {
+    width: 180px;
+    height: 180px;
+  }
 
-      .experiment-grid {
-        grid-template-columns: 1fr;
-      }
+  .experiment-image img {
+    width: 200px;
+  }
 
-      .image-strip {
-        grid-template-columns: repeat(2, 1fr);
-      }
+  .pote-project-inner {
+    padding:
+      36px
+      24px
+      250px;
 
-      .intro-image {
-        min-height: 320px;
-      }
+    border-radius: 30px;
+  }
 
-      .pote-visual {
-        min-height: 400px;
-      }
+  .about-box {
+    padding:
+      28px
+      24px;
+  }
+}
 
-      .footer-inner {
-        flex-direction: column;
-      }
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 2.2rem;
-      }
-
-      .hero-visual {
-        min-height: 330px;
-
-        border-radius: 28px;
-      }
-
-      .hero-visual img {
-        width: 94%;
-      }
-
-      .experiment-card {
-        min-height: 245px;
-
-        padding: 25px;
-      }
-
-      .experiment-card h3,
-      .experiment-card p {
-        max-width: 72%;
-      }
-
-      .experiment-character {
-        width: 125px;
-      }
-
-      .image-strip {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .image-tile {
-        min-height: 150px;
-      }
-
-      .image-tile img {
-        height: 175px;
-      }
-
-      .pote-visual {
-        min-height: 350px;
-
-        border-radius: 30px;
-      }
-
-      .about-box {
-        padding: 27px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      *,
-      *::before,
-      *::after {
-        transition: none !important;
-      }
-    }
-  </style>
+</style>
 </head>
+
 
 <body>
 
-  <header>
-    <div class="container header-inner">
 
-      <a href="#" class="logo">
-        みのりのAI実験室
+<header>
+
+  <nav class="nav">
+
+    <a href="#" class="logo">
+      MINORI'S <span>AI LAB</span>
+    </a>
+
+    <div class="nav-links">
+
+      <a href="#experiments">
+        Experiments
       </a>
 
-      <nav>
-        <a href="#experiments">Experiments</a>
-        <a href="#about">About</a>
+      <a href="#pote">
+        ぽて
+      </a>
 
-        <a
-          href="https://x.com/minori_ai_lab"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          X
-        </a>
-      </nav>
+      <a href="#about">
+        About
+      </a>
 
     </div>
-  </header>
+
+  </nav>
+
+</header>
 
 
-  <main>
+<main>
 
-    <!-- =========================
-         Hero
-    ========================== -->
 
-    <section class="hero container">
+<!-- =====================================================
+     HERO
+====================================================== -->
 
-      <div class="hero-copy">
+<section class="hero">
 
-        <span class="eyebrow">
-          MINORI'S AI LAB
+
+  <div class="hero-copy">
+
+
+    <div class="hero-kicker">
+      AI EXPERIMENTS / MINORI'S AI LAB
+    </div>
+
+
+    <h1>
+
+      <span class="line">
+        AIを使って、
+      </span>
+
+      <span class="line accent">
+        いろいろ作ってみる。
+      </span>
+
+    </h1>
+
+
+    <p class="hero-description">
+
+      AIを使って、実際にいろんなものを作ってみる。
+
+      うまくいったことも、失敗したことも、
+      そのまま記録していきます。
+
+    </p>
+
+
+    <div class="hero-actions">
+
+      <a
+        href="#experiments"
+        class="button button-primary"
+      >
+        実験記録を見る
+      </a>
+
+
+      <a
+        href="#pote"
+        class="button button-secondary"
+      >
+        ぽてについて
+      </a>
+
+    </div>
+
+
+  </div>
+
+
+  <div class="hero-art">
+
+    <img
+      src="assets/pote/website/pote-main.jpeg"
+      alt="AI相棒ぽて"
+    >
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     INTRO
+====================================================== -->
+
+<section>
+
+
+  <div class="intro">
+
+
+    <div class="intro-art">
+
+      <img
+        src="assets/pote/website/pote-hello.jpeg"
+        alt="ぽて"
+      >
+
+    </div>
+
+
+    <div class="intro-copy">
+
+
+      <div class="section-label">
+        ABOUT THIS LAB
+      </div>
+
+
+      <h2>
+
+        AIを使って、<br>
+
+        いろんなことを<br>
+
+        試してみる場所。
+
+      </h2>
+
+
+      <p>
+
+        このサイト自体もAIを使って作っています。
+
+        Webサイト、アクセス解析、AIキャラクター、
+        LINEスタンプなど、
+        実際に作って試したことを記録していきます。
+
+      </p>
+
+
+    </div>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     EXPERIMENTS
+====================================================== -->
+
+<section
+  class="experiments"
+  id="experiments"
+>
+
+
+  <div class="section-label">
+    EXPERIMENTS
+  </div>
+
+
+  <h2 class="section-title">
+    実験記録
+  </h2>
+
+
+  <p class="section-lead">
+
+    「実際にやってみた」を残していく。
+
+    作ったものだけじゃなく、
+    途中で分かったことや失敗も記録します。
+
+  </p>
+
+
+
+  <div class="experiment-list">
+
+
+    <!-- 01 -->
+
+    <article class="experiment">
+
+
+      <div class="experiment-copy">
+
+        <div class="experiment-number">
+          EXPERIMENT 01
+        </div>
+
+
+        <h3>
+          AIでサイトを作ってみた
+        </h3>
+
+
+        <p>
+
+          ChatGPT、Geminiなどに
+          同じ内容を伝えて、
+          どんなサイトができるのか
+          実際に比べてみる。
+
+        </p>
+
+
+        <span class="experiment-tag">
+          AI / Web
         </span>
-
-        <h1>
-          AIを使って、<br>
-          いろいろ作ってみる。
-        </h1>
-
-        <p class="hero-lead">
-          AIを使って、サイトを作ったり、分析したり、
-          キャラクターを作ったり。
-          「これ、AIで作れるんちゃう？」を
-          実際に試していく実験記録です。
-        </p>
-
-        <p class="hero-note">
-          このサイト自体も、AIと一緒に作っています。
-        </p>
 
       </div>
 
 
-      <div class="hero-visual">
+      <div class="experiment-image">
+
+        <img
+          src="assets/pote/website/pote-happy.jpeg"
+          alt="実験01"
+        >
+
+      </div>
+
+
+    </article>
+
+
+
+    <!-- 02 -->
+
+    <article class="experiment">
+
+
+      <div class="experiment-copy">
+
+        <div class="experiment-number">
+          EXPERIMENT 02
+        </div>
+
+
+        <h3>
+          GA・GTM・GSCを入れてみた
+        </h3>
+
+
+        <p>
+
+          Google Analytics、
+          GTM、Search Consoleを
+          実際のサイトに入れて、
+          計測できる状態まで作ってみる。
+
+        </p>
+
+
+        <span class="experiment-tag">
+          Analytics
+        </span>
+
+      </div>
+
+
+      <div class="experiment-image">
+
+        <img
+          src="assets/pote/website/pote-working.jpeg"
+          alt="実験02"
+        >
+
+      </div>
+
+
+    </article>
+
+
+
+    <!-- 03 -->
+
+    <article class="experiment">
+
+
+      <div class="experiment-copy">
+
+        <div class="experiment-number">
+          EXPERIMENT 03
+        </div>
+
+
+        <h3>
+          分析してみた
+        </h3>
+
+
+        <p>
+
+          実際に集まったデータを見ながら、
+          「何が見えるのか」を
+          試してみる。
+
+        </p>
+
+
+        <span class="experiment-tag">
+          Data
+        </span>
+
+      </div>
+
+
+      <div class="experiment-image">
+
+        <img
+          src="assets/pote/website/pote-thinking.jpeg"
+          alt="実験03"
+        >
+
+      </div>
+
+
+    </article>
+
+
+
+    <!-- 04 -->
+
+    <article class="experiment">
+
+
+      <div class="experiment-copy">
+
+        <div class="experiment-number">
+          EXPERIMENT 04
+        </div>
+
+
+        <h3>
+          改善してみた
+        </h3>
+
+
+        <p>
+
+          Before → Change → Afterで、
+          実際にサイトを変えて
+          どうなるか記録する。
+
+        </p>
+
+
+        <span class="experiment-tag">
+          Improve
+        </span>
+
+      </div>
+
+
+      <div class="experiment-image">
+
+        <img
+          src="assets/pote/website/pote-hello.jpeg"
+          alt="実験04"
+        >
+
+      </div>
+
+
+    </article>
+
+
+
+    <!-- 05 -->
+
+    <article class="experiment">
+
+
+      <div class="experiment-copy">
+
+        <div class="experiment-number">
+          EXPERIMENT 05
+        </div>
+
+
+        <h3>
+          癒やしAI相棒を作りたい
+        </h3>
+
+
+        <p>
+
+          会話できて、声で話せて、
+          ちょっと癒やしてくれる
+          AI相棒を作ってみる。
+
+        </p>
+
+
+        <span class="experiment-tag">
+          AI Partner
+        </span>
+
+      </div>
+
+
+      <div class="experiment-image">
 
         <img
           src="assets/pote/website/pote-main.jpeg"
-          alt="オリジナルキャラクター ぽて"
+          alt="実験05"
         >
 
       </div>
 
-    </section>
+
+    </article>
 
 
-    <!-- =========================
-         Intro
-    ========================== -->
 
-    <section class="container">
+    <!-- 06 -->
 
-      <div class="intro">
+    <article class="experiment">
 
-        <div class="intro-image">
 
-          <img
-            src="assets/pote/website/pote-hello.jpeg"
-            alt="挨拶するぽて"
-          >
+      <div class="experiment-copy">
 
+        <div class="experiment-number">
+          EXPERIMENT 06
         </div>
 
 
-        <div class="intro-text">
-
-          <div class="section-heading">
-
-            <div class="small">
-              ABOUT THIS LAB
-            </div>
-
-            <h2>
-              とりあえず、<br>
-              やってみる。
-            </h2>
-
-          </div>
+        <h3>
+          これから作ってみるもの
+        </h3>
 
 
-          <p>
-            AIって、調べてるだけでも面白いけど、
-            実際に手を動かしてみるともっと面白い。
-          </p>
+        <p>
 
-          <p>
-            そこで、サイト制作、アクセス解析、
-            AIキャラクター制作など、
-            <strong>
-              気になったことを実際に試して記録する場所
-            </strong>
-            を作りました。
-          </p>
+          AIを使って何が作れるのか、
+          思いついたものから
+          どんどん試していく。
 
-          <p>
-            うまくいったことだけじゃなく、
-            失敗したことや「ここ難しかった」も
-            できるだけ残していきます。
-          </p>
+        </p>
 
-        </div>
+
+        <span class="experiment-tag">
+          Coming Soon
+        </span>
 
       </div>
 
-    </section>
 
+      <div class="experiment-image">
 
-    <!-- =========================
-         Experiments
-    ========================== -->
-
-    <section id="experiments" class="experiments">
-
-      <div class="container">
-
-        <div class="section-heading">
-
-          <div class="small">
-            EXPERIMENTS
-          </div>
-
-          <h2>
-            実験記録
-          </h2>
-
-          <p>
-            AIを使って実際にやってみたことを、
-            ひとつずつ記録していきます。
-          </p>
-
-        </div>
-
-
-        <div class="experiment-grid">
-
-
-          <article class="experiment-card">
-
-            <div class="experiment-number">
-              EXPERIMENT 01
-            </div>
-
-            <h3>
-              AIでサイトを作ってみた
-            </h3>
-
-            <p>
-              ChatGPT、Gemini、Claudeなどに
-              同じ指示を出して、どんな違いが出るのか試してみる。
-            </p>
-
-            <span class="status">
-              記録中
-            </span>
-
-            <div class="experiment-character">
-
-              <img
-                src="assets/pote/website/pote-thinking.jpeg"
-                alt=""
-              >
-
-            </div>
-
-          </article>
-
-
-          <article class="experiment-card">
-
-            <div class="experiment-number">
-              EXPERIMENT 02
-            </div>
-
-            <h3>
-              GA・GTM・GSCを入れてみた
-            </h3>
-
-            <p>
-              Google Analytics、GTM、Search Consoleを
-              実際のサイトに入れてみる。
-            </p>
-
-            <span class="status">
-              これから
-            </span>
-
-            <div class="experiment-character">
-
-              <img
-                src="assets/pote/website/pote-working.jpeg"
-                alt=""
-              >
-
-            </div>
-
-          </article>
-
-
-          <article class="experiment-card">
-
-            <div class="experiment-number">
-              EXPERIMENT 03
-            </div>
-
-            <h3>
-              サイトを分析してみた
-            </h3>
-
-            <p>
-              実際に集まったアクセスデータを見ながら、
-              「どこが見られている？」を考えてみる。
-            </p>
-
-            <span class="status">
-              これから
-            </span>
-
-            <div class="experiment-character">
-
-              <img
-                src="assets/pote/website/pote-thinking.jpeg"
-                alt=""
-              >
-
-            </div>
-
-          </article>
-
-
-          <article class="experiment-card">
-
-            <div class="experiment-number">
-              EXPERIMENT 04
-            </div>
-
-            <h3>
-              サイトを改善してみた
-            </h3>
-
-            <p>
-              分析した結果をもとにページを変更して、
-              Before → Change → Afterを記録する。
-            </p>
-
-            <span class="status">
-              これから
-            </span>
-
-            <div class="experiment-character">
-
-              <img
-                src="assets/pote/website/pote-happy.jpeg"
-                alt=""
-              >
-
-            </div>
-
-          </article>
-
-
-          <article class="experiment-card">
-
-            <div class="experiment-number">
-              EXPERIMENT 05
-            </div>
-
-            <h3>
-              癒やしAI相棒を作りたい
-            </h3>
-
-            <p>
-              話しかけたら返事をしてくれる、
-              自分だけのAI相棒を実際に作ってみる。
-            </p>
-
-            <span class="status">
-              制作中
-            </span>
-
-            <div class="experiment-character">
-
-              <img
-                src="assets/pote/website/pote-main.jpeg"
-                alt=""
-              >
-
-            </div>
-
-          </article>
-
-
-          <article class="experiment-card">
-
-            <div class="experiment-number">
-              EXPERIMENT 06
-            </div>
-
-            <h3>
-              まだ考え中。
-            </h3>
-
-            <p>
-              次に何を作るかは、
-              実験しながら決めていきます。
-            </p>
-
-            <span class="status">
-              COMING SOON
-            </span>
-
-            <div class="experiment-character">
-
-              <img
-                src="assets/pote/website/pote-happy.jpeg"
-                alt=""
-              >
-
-            </div>
-
-          </article>
-
-
-        </div>
+        <img
+          src="assets/pote/website/pote-experiment.jpeg"
+          alt="実験06"
+        >
 
       </div>
 
-    </section>
+
+    </article>
 
 
-    <!-- =========================
-         Project Pote
-    ========================== -->
-
-    <section class="pote-section">
-
-      <div class="container">
-
-        <div class="pote-layout">
+  </div>
 
 
-          <div class="pote-copy">
-
-            <div class="section-heading">
-
-              <div class="small">
-                PROJECT POTE
-              </div>
-
-              <h2>
-                ぽてと一緒に、<br>
-                AIを作っていく。
-              </h2>
-
-            </div>
+</section>
 
 
-            <p>
-              この実験室には、
-              ちょっとした案内役がいます。
-            </p>
 
-            <p>
-              それが「ぽて」。
-            </p>
+<!-- =====================================================
+     POTE PROJECT
+====================================================== -->
 
-            <p>
-              ゆるくて、ちょっと抜けてて、
-              でも一緒にいろんなことを試していく。
-              そんなAI相棒を目指しています。
-            </p>
+<section
+  id="pote"
+  class="pote-project"
+>
 
 
-            <div class="pote-points">
-
-              <div class="pote-point">
-
-                <strong>
-                  AI × キャラクター
-                </strong>
-
-                キャラクターとAIを組み合わせてみる。
-
-              </div>
+  <div class="pote-project-inner">
 
 
-              <div class="pote-point">
-
-                <strong>
-                  作って、試す。
-                </strong>
-
-                完成してから公開するのではなく、
-                制作過程も記録する。
-
-              </div>
+    <div class="pote-project-content">
 
 
-              <div class="pote-point">
-
-                <strong>
-                  失敗も実験。
-                </strong>
-
-                うまくいかなかったことも、
-                次の改善材料にする。
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div class="pote-visual">
-
-            <img
-              src="assets/pote/website/pote-happy.jpeg"
-              alt="嬉しそうにしているぽて"
-            >
-
-          </div>
-
-
-        </div>
-
-
-        <div class="image-strip">
-
-          <div class="image-tile">
-
-            <img
-              src="assets/pote/website/pote-main.jpeg"
-              alt="座っているぽて"
-            >
-
-          </div>
-
-
-          <div class="image-tile">
-
-            <img
-              src="assets/pote/website/pote-hello.jpeg"
-              alt="挨拶するぽて"
-            >
-
-          </div>
-
-
-          <div class="image-tile">
-
-            <img
-              src="assets/pote/website/pote-thinking.jpeg"
-              alt="考えているぽて"
-            >
-
-          </div>
-
-
-          <div class="image-tile">
-
-            <img
-              src="assets/pote/website/pote-working.jpeg"
-              alt="作業するぽて"
-            >
-
-          </div>
-
-        </div>
-
+      <div class="section-label">
+        PROJECT 05
       </div>
 
-    </section>
+
+      <h2>
+
+        ぽてと一緒に、<br>
+
+        作ってみる。
+
+      </h2>
 
 
-    <!-- =========================
-         About
-    ========================== -->
+      <p>
 
-    <section id="about" class="about">
+        このサイトの実験のひとつとして、
+        自分だけのAI相棒「ぽて」を作っています。
 
-      <div class="container">
+        会話、音声、表情、キャラクターまで、
+        少しずつ形にしていく予定です。
 
-        <div class="section-heading">
-
-          <div class="small">
-            ABOUT
-          </div>
-
-          <h2>
-            この実験室について
-          </h2>
-
-          <p>
-            「AIで何ができるんやろ？」を、
-            実際に試しながら残していく場所です。
-          </p>
-
-        </div>
+      </p>
 
 
-        <div class="about-grid">
-
-
-          <div class="about-box">
-
-            <h3>
-              このサイトもAIと制作中
-            </h3>
-
-            <p>
-              サイトの構成、文章、デザイン、コードなど、
-              AIと相談しながら少しずつ作っています。
-            </p>
-
-            <p>
-              「AIに全部やってもらう」ではなく、
-              自分で考えながら一緒に作るスタイルです。
-            </p>
-
-          </div>
-
-
-          <div class="about-box">
-
-            <h3>
-              これからやってみたいこと
-            </h3>
-
-            <p>
-              アクセス解析、AIキャラクター、
-              音声AI、動画制作、SNSなど、
-              気になったことをどんどん試していく予定です。
-            </p>
-
-            <p>
-              次に何を作るかも、
-              この実験室で決めていきます。
-            </p>
-
-          </div>
-
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =========================
-         X
-    ========================== -->
-
-    <section class="social">
-
-      <div class="container">
-
-        <div class="section-heading">
-
-          <div class="small">
-            X
-          </div>
-
-          <h2>
-            制作の途中はXに。
-          </h2>
-
-          <p>
-            サイトの記事にする前の制作過程や、
-            日々の実験も記録しています。
-          </p>
-
-        </div>
-
+      <div class="hero-actions">
 
         <a
-          href="https://x.com/minori_ai_lab"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#about"
+          class="button button-secondary"
         >
-          𝕏　@minori_ai_lab
+          このサイトについて
         </a>
 
       </div>
 
-    </section>
-
-  </main>
-
-
-  <footer>
-
-    <div class="container footer-inner">
-
-      <div>
-        © 2026 みのりのAI実験室
-      </div>
-
-      <div>
-        AIと一緒に、いろいろ作ってみる。
-      </div>
 
     </div>
 
-  </footer>
+
+    <div class="pote-project-art">
+
+      <img
+        src="assets/pote/website/pote-working.jpeg"
+        alt="作業中のぽて"
+      >
+
+    </div>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     FUTURE
+====================================================== -->
+
+<section>
+
+
+  <div class="section-label">
+    NEXT
+  </div>
+
+
+  <h2 class="section-title">
+    これからやってみたいこと
+  </h2>
+
+
+  <div class="future-list">
+
+
+    <article class="future-item">
+
+      <h3>
+        AIキャラクター
+      </h3>
+
+      <p>
+        ぽてをもっと会話できる相棒にしていく。
+      </p>
+
+    </article>
+
+
+    <article class="future-item">
+
+      <h3>
+        Web分析
+      </h3>
+
+      <p>
+        GA4・GSCのデータを見ながら改善してみる。
+      </p>
+
+    </article>
+
+
+    <article class="future-item">
+
+      <h3>
+        LINEスタンプ
+      </h3>
+
+      <p>
+        ぽてのスタンプを実際に作って公開してみる。
+      </p>
+
+    </article>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     ABOUT
+====================================================== -->
+
+<section
+  class="about"
+  id="about"
+>
+
+
+  <div class="section-label">
+    ABOUT
+  </div>
+
+
+  <div class="about-box">
+
+
+    <h2 class="section-title">
+
+      作って、試して、<br>
+
+      また作る。
+
+    </h2>
+
+
+    <p>
+
+      AIを使うことで、
+      今までなら時間がかかっていたことも
+      とりあえず自分で試せるようになってきました。
+
+      このサイトでは、その過程を記録していきます。
+
+    </p>
+
+
+    <div class="about-links">
+
+
+      <a
+        class="about-link"
+        href="https://x.com/minori_ai_lab"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        X
+      </a>
+
+
+      <span class="about-link">
+        AI
+      </span>
+
+
+      <span class="about-link">
+        Web
+      </span>
+
+
+      <span class="about-link">
+        Experiments
+      </span>
+
+
+    </div>
+
+
+  </div>
+
+
+</section>
+
+
+</main>
+
+
+
+<footer>
+  © 2026 Minori's AI Lab
+</footer>
+
 
 </body>
 </html>
