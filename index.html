@@ -352,23 +352,19 @@ section {
 
   border-radius: 50%;
 
-  background:
-    radial-gradient(
-      circle,
-      rgba(127, 147, 141, .18) 0%,
-      rgba(127, 147, 141, .10) 40%,
-      rgba(127, 147, 141, .04) 62%,
-      rgba(127, 147, 141, 0) 78%
-    );
+  background: var(--accent-soft);
+
+  opacity: .8;
 }
 
 .hero-art img {
   position: relative;
 
-  z-index: 2;
+  z-index: 1;
 
-  width: min(100%, 520px);
-  mix-blend-mode: multiply;
+  width: min(100%, 430px);
+
+  border-radius: 50%;
 
   filter:
     drop-shadow(
@@ -412,9 +408,9 @@ section {
 
   border-radius: 50%;
 
-  background: var(--accent-soft);
+  background: transparent;
 
-  opacity: .85;
+  opacity: 0;
 }
 
 .intro-art img {
@@ -422,7 +418,11 @@ section {
 
   z-index: 1;
 
-  width: 310px;
+  width: 100%;
+  max-width: 290px;
+
+  border-radius: 50%;
+  mix-blend-mode: multiply;
 
   filter:
     drop-shadow(
@@ -579,6 +579,8 @@ section {
 
   max-width: none;
 
+  border-radius: 50%;
+
   filter:
     drop-shadow(
       0 10px 16px
@@ -597,6 +599,8 @@ section {
 
 .pote-project-inner {
   position: relative;
+
+  overflow: hidden;
 
   padding: 70px;
 
@@ -620,8 +624,8 @@ section {
   width: 280px;
   height: 280px;
 
-  right: -100px;
-  top: -110px;
+  right: -40px;
+  top: -40px;
 
   border-radius: 50%;
 
@@ -658,16 +662,17 @@ section {
   position: absolute;
 
   right: 30px;
-  bottom: -20px;
+  bottom: 20px;
 
-  width: 290px;
+  width: 220px;
 
   pointer-events: none;
 }
 
 .pote-project-art img {
   width: 100%;
-  mix-blend-mode: multiply;
+
+  border-radius: 50%;
 
   filter:
     drop-shadow(
@@ -794,8 +799,6 @@ footer {
 
   .hero-art {
     min-height: 420px;
-
-    order: -1;
   }
 
   .hero-art::before {
@@ -813,8 +816,17 @@ footer {
     gap: 40px;
   }
 
+  .intro-copy {
+    order: 1;
+  }
+
   .intro-art {
+    order: 2;
+
     max-width: 300px;
+    width: 100%;
+
+    margin: 0 auto;
   }
 
   .experiment-list {
@@ -833,14 +845,11 @@ footer {
   }
 
   .pote-project-art {
-    width: 250px;
+    width: 180px;
 
-    right: 50%;
+    right: 24px;
 
-    transform:
-      translateX(50%);
-
-    bottom: -35px;
+    bottom: 24px;
   }
 }
 
@@ -881,6 +890,11 @@ footer {
 
   .hero h1 .line {
     white-space: normal;
+  }
+
+  .hero h1 {
+    word-break: normal;
+    overflow-wrap: break-word;
   }
 
   .hero-art {
